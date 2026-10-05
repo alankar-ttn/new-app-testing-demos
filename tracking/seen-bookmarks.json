@@ -1,5 +1,14 @@
 {
-  "proposed": [],
+  "proposed": [
+    {
+      "id": "2097061091066937696",
+      "title": "TanStack Start (AI Studio full-stack apps)",
+      "url": "https://x.com/gohighlevel/status/2097061091066937696",
+      "date": "2026-10-06",
+      "tech": "TanStack Start",
+      "slug": "tanstack-start-demo"
+    }
+  ],
   "skipped": [],
   "built": []
 }
