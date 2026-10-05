@@ -20,6 +20,10 @@ Open http://localhost:3000.
 - `bun run preview` — serve the production build
 - `bun test` — idea-board store tests
 
+## Deploy on Vercel
+
+Set **Root Directory** to `apps/tanstack-start-demo`. Framework preset: **TanStack Start** (or Auto). Nitro is configured in `vite.config.ts` for the Vercel build.
+
 ## Stack
 
 Bun, TanStack Start (official `bunx @tanstack/cli create` scaffold), shadcn/ui, TypeScript.
