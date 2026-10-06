@@ -23,12 +23,13 @@
     "pi_durable_demo": {
       "root": "apps/pi-durable-demo",
       "framework": "bun",
+      "entrypoint": "src/server.ts",
       "installCommand": "bun install",
       "buildCommand": "bun run build",
       "functions": {
         "src/server.ts": {
           "maxDuration": 60,
-          "includeFiles": "dist/**,src/**"
+          "includeFiles": "dist/**,src/**,apps/pi-durable-demo/dist/**,apps/pi-durable-demo/src/**"
         }
       }
     }
@@ -71,7 +72,7 @@
       }
     },
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "destination": {
         "service": "hub"
       }

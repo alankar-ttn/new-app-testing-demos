@@ -46,13 +46,18 @@ function setSnapshot(next: WorkerSnapshot): void {
 }
 
 function projectRoot(): string {
-  const candidates = [appRoot, process.cwd()]
+  const candidates = [appRoot, process.cwd(), join(process.cwd(), "apps", "pi-durable-demo")]
   return candidates.find((dir) => existsSync(join(dir, "node_modules"))) ?? appRoot
 }
 
 function workerScript(): string {
   const root = projectRoot()
-  const candidates = [join(root, "src/worker.ts"), join(appRoot, "src/worker.ts"), join(process.cwd(), "src/worker.ts")]
+  const candidates = [
+    join(root, "src/worker.ts"),
+    join(appRoot, "src/worker.ts"),
+    join(process.cwd(), "src/worker.ts"),
+    join(process.cwd(), "apps", "pi-durable-demo", "src/worker.ts"),
+  ]
   const found = candidates.find((path) => existsSync(path))
   if (!found) throw new Error(`Worker script not found. Looked in ${candidates.join(", ")}`)
   return found
@@ -221,7 +226,13 @@ function jsonResponse(status: number, body: unknown): Response {
 }
 
 function distRoot(): string | null {
-  const candidates = [join(projectRoot(), "dist"), join(appRoot, "dist"), join(process.cwd(), "dist")]
+  const candidates = [
+    join(projectRoot(), "dist"),
+    join(appRoot, "dist"),
+    join(process.cwd(), "dist"),
+    // Services includeFiles are stored from the repository root.
+    join(process.cwd(), "apps", "pi-durable-demo", "dist"),
+  ]
   return candidates.find((dir) => existsSync(dir)) ?? null
 }
 
@@ -312,9 +323,9 @@ async function productionFetch(request: Request): Promise<Response> {
 }
 
 if (hosted) {
+  // On Vercel the runtime owns the socket. port and hostname apply only locally.
   Bun.serve({
-    port,
-    hostname: "0.0.0.0",
+    ...(process.env.VERCEL === "1" ? {} : { port, hostname: "0.0.0.0" }),
     fetch: productionFetch,
   })
   const prefix = mountPrefix() || "/"

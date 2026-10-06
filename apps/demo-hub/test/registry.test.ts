@@ -18,10 +18,15 @@ test("root vercel.json matches the registry", () => {
   const vercelPath = new URL("../../../vercel.json", import.meta.url)
   const committed = JSON.parse(readFileSync(vercelPath, "utf8")) as {
     services: Record<string, Record<string, unknown>>
+    rewrites: { source: string }[]
   }
   expect(committed).toEqual(buildVercelConfig(demoEntries))
   for (const service of Object.values(committed.services)) {
     expect(service).not.toHaveProperty("bunVersion")
+  }
+  expect(committed.rewrites.at(-1)?.source).toBe("/(.*)")
+  for (const rewrite of committed.rewrites.slice(0, -1)) {
+    expect(rewrite.source.startsWith("/demos/")).toBe(true)
   }
 })
 
@@ -37,5 +42,13 @@ test("bun services keep bunVersion on the app vercel.json", () => {
     ) as { bunVersion?: string; framework?: string }
     expect(appConfig.framework).toBe("bun")
     expect(appConfig.bunVersion).toBe("1.x")
+    expect(service?.entrypoint).toBe("src/server.ts")
+    const includeFiles = service?.functions?.["src/server.ts"]?.includeFiles ?? ""
+    expect(includeFiles).toContain("dist/**")
+    expect(includeFiles).toContain(`apps/${demo.slug}/dist/**`)
+    const pkg = JSON.parse(
+      readFileSync(new URL(`../../../apps/${demo.slug}/package.json`, import.meta.url), "utf8"),
+    ) as { engines?: { bun?: string } }
+    expect(pkg.engines?.bun).toBe("1.x")
   }
 })

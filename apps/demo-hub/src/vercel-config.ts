@@ -8,6 +8,7 @@ type Rewrite = {
 type ServiceConfig = {
   root: string
   framework: string
+  entrypoint?: string
   installCommand: string
   buildCommand: string
   outputDirectory?: string
@@ -24,17 +25,20 @@ export type VercelProjectConfig = {
 function demoService(demo: DemoEntry): ServiceConfig {
   const root = `apps/${demo.slug}`
   if (demo.framework === "bun") {
-    // bunVersion is not a service field. The Bun preset reads it from
-    // apps/<slug>/vercel.json (see apps/pi-durable-demo/vercel.json).
+    // bunVersion is not a service field, and a root bunVersion would switch
+    // every service onto Bun. The app selects Bun with package.json engines.bun.
+    // includeFiles is globbed from the repository root during a services build,
+    // so both the service-relative and repo-relative patterns are listed.
     return {
       root,
       framework: "bun",
+      entrypoint: "src/server.ts",
       installCommand: "bun install",
       buildCommand: "bun run build",
       functions: {
         "src/server.ts": {
           maxDuration: 60,
-          includeFiles: "dist/**,src/**",
+          includeFiles: `dist/**,src/**,apps/${demo.slug}/dist/**,apps/${demo.slug}/src/**`,
         },
       },
     }
@@ -84,7 +88,8 @@ export function buildVercelConfig(demos: DemoEntry[]): VercelProjectConfig {
       { source: `${mounted}:path*`, destination },
     )
   }
-  rewrites.push({ source: "/:path*", destination: { service: "hub" } })
+  // "/:path*" does not match the empty path, so "/" never reaches the hub.
+  rewrites.push({ source: "/(.*)", destination: { service: "hub" } })
 
   return {
     $schema: "https://openapi.vercel.sh/vercel.json",
