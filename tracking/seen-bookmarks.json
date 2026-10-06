@@ -1,5 +1,7 @@
 {
-  "proposed": [
+  "proposed": [],
+  "skipped": [],
+  "built": [
     {
       "id": "2097061091066937696",
       "title": "TanStack Start (AI Studio full-stack apps)",
@@ -16,7 +18,5 @@
       "tech": "Pi Durable",
       "slug": "pi-durable-demo"
     }
-  ],
-  "skipped": [],
-  "built": []
+  ]
 }
