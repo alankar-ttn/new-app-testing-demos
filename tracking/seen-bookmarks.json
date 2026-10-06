@@ -7,6 +7,14 @@
       "date": "2026-10-06",
       "tech": "TanStack Start",
       "slug": "tanstack-start-demo"
+    },
+    {
+      "id": "2105866862424932470",
+      "title": "Pi 1.0 + Pi Durable (durable agent harness, Cloudflare Durable Objects)",
+      "url": "https://x.com/NotThatTheo/status/2105866862424932470",
+      "date": "2026-10-06",
+      "tech": "Pi Durable",
+      "slug": "pi-durable-demo"
     }
   ],
   "skipped": [],
