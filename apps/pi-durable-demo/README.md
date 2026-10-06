@@ -38,7 +38,7 @@ The public API used here matches the 1.0.0 README: `Harness.open`, `harness.resu
 
 ## Deploy on Vercel
 
-This demo ships with the monorepo hub. One Vercel project uses the **repository root** as Root Directory. Root `vercel.json` routes `/demos/pi-durable-demo/` to this Bun server (`Bun.serve` in `src/server.ts`, `bunVersion` `1.x`). `bun run build` writes the Vite UI to `dist/`, and the server serves those files plus `/api/*`.
+This demo ships with the monorepo hub. One Vercel project uses the **repository root** as Root Directory. Root `vercel.json` routes `/demos/pi-durable-demo/` to this Bun server (`entrypoint` `src/server.ts`). The service schema rejects `bunVersion`, and a root `bunVersion` would switch every service onto Bun, so this app sets `"engines": { "bun": "1.x" }` instead. `apps/pi-durable-demo/vercel.json` still sets `bunVersion` for a standalone deploy. `bun run build` writes the Vite UI to `dist/`, and the server serves those files plus `/api/*`.
 
 On Vercel the SQLite file is `/tmp/pi-durable-demo/session.sqlite`. That directory belongs to one Fluid instance and is deleted when the instance goes away. `waitUntil` keeps the worker alive after the start response on that instance. Kill and restart call `SIGKILL` and `harness.resume()` only if they hit the same instance that owns the child process and the `/tmp` database.
 

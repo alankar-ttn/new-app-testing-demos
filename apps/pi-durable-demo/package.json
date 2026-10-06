@@ -2,6 +2,9 @@
   "name": "pi-durable-demo",
   "private": true,
   "type": "module",
+  "engines": {
+    "bun": "1.x"
+  },
   "scripts": {
     "dev": "bun src/server.ts",
     "build": "vite build",
