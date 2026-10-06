@@ -11,7 +11,6 @@ type ServiceConfig = {
   installCommand: string
   buildCommand: string
   outputDirectory?: string
-  bunVersion?: string
   rewrites?: Rewrite[]
   functions?: Record<string, { maxDuration?: number; includeFiles?: string }>
 }
@@ -25,10 +24,11 @@ export type VercelProjectConfig = {
 function demoService(demo: DemoEntry): ServiceConfig {
   const root = `apps/${demo.slug}`
   if (demo.framework === "bun") {
+    // bunVersion is not a service field. The Bun preset reads it from
+    // apps/<slug>/vercel.json (see apps/pi-durable-demo/vercel.json).
     return {
       root,
       framework: "bun",
-      bunVersion: "1.x",
       installCommand: "bun install",
       buildCommand: "bun run build",
       functions: {

@@ -23,7 +23,6 @@
     "pi_durable_demo": {
       "root": "apps/pi-durable-demo",
       "framework": "bun",
-      "bunVersion": "1.x",
       "installCommand": "bun install",
       "buildCommand": "bun run build",
       "functions": {
