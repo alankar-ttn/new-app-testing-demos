@@ -2,6 +2,7 @@ import { OctagonX, Play, RotateCcw } from "lucide-react"
 import { useEffect, useState } from "react"
 import { SAMPLE_CHANGELOG } from "../sample-changelog"
 import type { PublicState, ToolCard, ToolStatus } from "../types"
+import { withBase } from "../with-base"
 import { Badge } from "./ui/badge"
 import { Button } from "./ui/button"
 import {
@@ -31,6 +32,8 @@ const statusLabel: Record<ToolStatus, string> = {
   replayed: "Replayed",
   interrupted: "Interrupted",
 }
+
+const api = (path: string) => withBase(import.meta.env.BASE_URL, path)
 
 async function post(path: string, body?: unknown): Promise<void> {
   const response = await fetch(path, {
@@ -87,7 +90,7 @@ export function DemoApp() {
   const [formError, setFormError] = useState<string | null>(null)
 
   useEffect(() => {
-    const source = new EventSource("/api/events")
+    const source = new EventSource(api("api/events"))
     source.onmessage = (event) => {
       setState(JSON.parse(event.data) as PublicState)
     }
@@ -104,9 +107,9 @@ export function DemoApp() {
     setPending(action)
     setFormError(null)
     try {
-      if (action === "start") await post("/api/start", { changelog })
-      if (action === "kill") await post("/api/kill")
-      if (action === "resume") await post("/api/resume")
+      if (action === "start") await post(api("api/start"), { changelog })
+      if (action === "kill") await post(api("api/kill"))
+      if (action === "resume") await post(api("api/resume"))
     } catch (caught) {
       setFormError(caught instanceof Error ? caught.message : "Request failed")
     } finally {
@@ -123,9 +126,16 @@ export function DemoApp() {
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="grid gap-1">
-          <p className="text-xs font-medium tracking-[0.16em] text-muted-foreground uppercase">
-            Pi Durable
-          </p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs font-medium tracking-[0.16em] text-muted-foreground uppercase">
+              Pi Durable
+            </p>
+            {import.meta.env.BASE_URL !== "/" ? (
+              <a href="/" className="text-sm text-muted-foreground underline-offset-4 hover:underline">
+                All demos
+              </a>
+            ) : null}
+          </div>
           <h1 className="text-3xl font-medium tracking-tight">Crash-proof release brief</h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
             A mock model scans a changelog and stamps a release note. Kill the worker mid-run.

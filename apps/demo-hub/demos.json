@@ -1,0 +1,14 @@
+[
+  {
+    "slug": "tanstack-start-demo",
+    "name": "TanStack Start idea board",
+    "description": "Add a card. A TanStack Start server function keeps the list in memory for the session.",
+    "framework": "tanstack-start"
+  },
+  {
+    "slug": "pi-durable-demo",
+    "name": "Pi Durable crash-proof agent",
+    "description": "Kill a mock agent mid-run and restart it from the last SQLite checkpoint.",
+    "framework": "bun"
+  }
+]

@@ -22,7 +22,9 @@ Open http://localhost:3000.
 
 ## Deploy on Vercel
 
-Set **Root Directory** to `apps/tanstack-start-demo`. Framework preset: **TanStack Start** (or Auto). Nitro is configured in `vite.config.ts` for the Vercel build.
+This demo ships with the monorepo hub. One Vercel project uses the **repository root** as Root Directory. Root `vercel.json` routes `/demos/tanstack-start-demo/` to this app. Do not point Root Directory at this folder.
+
+`bun run dev` in this directory still serves http://localhost:3000/. The `/demos/tanstack-start-demo/` base is applied only when `VERCEL=1` (production) or when `DEMO_BASE_PATH` is set (the hub dev proxy). Nitro `baseURL`, Vite `base`, and the router `basepath` stay in lockstep.
 
 ## Stack
 

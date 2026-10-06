@@ -1,0 +1,81 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "hub": {
+      "root": "apps/demo-hub",
+      "framework": "vite",
+      "installCommand": "bun install",
+      "buildCommand": "bun run build",
+      "outputDirectory": "dist",
+      "rewrites": [
+        {
+          "source": "/(.*)",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    "tanstack_start_demo": {
+      "root": "apps/tanstack-start-demo",
+      "framework": "tanstack-start",
+      "installCommand": "bun install",
+      "buildCommand": "bun run build"
+    },
+    "pi_durable_demo": {
+      "root": "apps/pi-durable-demo",
+      "framework": "bun",
+      "bunVersion": "1.x",
+      "installCommand": "bun install",
+      "buildCommand": "bun run build",
+      "functions": {
+        "src/server.ts": {
+          "maxDuration": 60,
+          "includeFiles": "dist/**,src/**"
+        }
+      }
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/demos/tanstack-start-demo",
+      "destination": {
+        "service": "tanstack_start_demo"
+      }
+    },
+    {
+      "source": "/demos/tanstack-start-demo/",
+      "destination": {
+        "service": "tanstack_start_demo"
+      }
+    },
+    {
+      "source": "/demos/tanstack-start-demo/:path*",
+      "destination": {
+        "service": "tanstack_start_demo"
+      }
+    },
+    {
+      "source": "/demos/pi-durable-demo",
+      "destination": {
+        "service": "pi_durable_demo"
+      }
+    },
+    {
+      "source": "/demos/pi-durable-demo/",
+      "destination": {
+        "service": "pi_durable_demo"
+      }
+    },
+    {
+      "source": "/demos/pi-durable-demo/:path*",
+      "destination": {
+        "service": "pi_durable_demo"
+      }
+    },
+    {
+      "source": "/:path*",
+      "destination": {
+        "service": "hub"
+      }
+    }
+  ]
+}

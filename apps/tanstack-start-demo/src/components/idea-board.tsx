@@ -62,9 +62,19 @@ export function IdeaBoard({ ideas }: { ideas: Idea[] }) {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6">
       <header className="flex flex-col gap-3">
-        <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
-          TanStack Start
-        </p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm font-medium tracking-wide text-muted-foreground uppercase">
+            TanStack Start
+          </p>
+          {import.meta.env.BASE_URL !== '/' ? (
+            <a
+              href="/"
+              className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+            >
+              All demos
+            </a>
+          ) : null}
+        </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div className="flex max-w-2xl flex-col gap-2">
             <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
