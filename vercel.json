@@ -32,6 +32,19 @@
           "includeFiles": "dist/**,src/**,apps/pi-durable-demo/dist/**,apps/pi-durable-demo/src/**"
         }
       }
+    },
+    "mastra_agent_demo": {
+      "root": "apps/mastra-agent-demo",
+      "framework": "bun",
+      "entrypoint": "src/server.ts",
+      "installCommand": "bun install",
+      "buildCommand": "bun run build",
+      "functions": {
+        "src/server.ts": {
+          "maxDuration": 60,
+          "includeFiles": "dist/**,src/**,apps/mastra-agent-demo/dist/**,apps/mastra-agent-demo/src/**"
+        }
+      }
     }
   },
   "rewrites": [
@@ -69,6 +82,24 @@
       "source": "/demos/pi-durable-demo/:path*",
       "destination": {
         "service": "pi_durable_demo"
+      }
+    },
+    {
+      "source": "/demos/mastra-agent-demo",
+      "destination": {
+        "service": "mastra_agent_demo"
+      }
+    },
+    {
+      "source": "/demos/mastra-agent-demo/",
+      "destination": {
+        "service": "mastra_agent_demo"
+      }
+    },
+    {
+      "source": "/demos/mastra-agent-demo/:path*",
+      "destination": {
+        "service": "mastra_agent_demo"
       }
     },
     {
