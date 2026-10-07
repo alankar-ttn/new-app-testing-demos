@@ -1,6 +1,15 @@
 {
   "proposed": [],
-  "skipped": [],
+  "skipped": [
+    {
+      "id": "2100545857955193062",
+      "title": "Mastra (TypeScript agent framework: agents, tools, memory, workflows)",
+      "url": "https://x.com/sandri_romulo/status/2100545857955193062",
+      "date": "2026-10-07",
+      "tech": "Mastra",
+      "slug": "mastra-agent-demo"
+    }
+  ],
   "built": [
     {
       "id": "2097061091066937696",
