@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs"
 import { expect, test } from "bun:test"
 import { demoEntries, demoPath, serviceName } from "../src/registry"
-import { buildVercelConfig } from "../src/vercel-config"
+import { buildVercelConfig, INCLUDE_FILES_MAX_LENGTH } from "../src/vercel-config"
 
 test("registry entries point at stable demo paths", () => {
   expect(demoEntries.length).toBeGreaterThan(0)
@@ -44,11 +44,20 @@ test("bun services keep bunVersion on the app vercel.json", () => {
     expect(appConfig.bunVersion).toBe("1.x")
     expect(service?.entrypoint).toBe("src/server.ts")
     const includeFiles = service?.functions?.["src/server.ts"]?.includeFiles ?? ""
-    expect(includeFiles).toContain("dist/**")
-    expect(includeFiles).toContain(`apps/${demo.slug}/dist/**`)
+    expect(includeFiles.length).toBeLessThanOrEqual(INCLUDE_FILES_MAX_LENGTH)
+    expect(includeFiles.replace(/\{[^}]*\}/g, "")).not.toContain(",")
+    const glob = new Bun.Glob(includeFiles)
+    for (const base of ["", `apps/${demo.slug}/`]) {
+      expect(glob.match(`${base}dist/index.html`)).toBe(true)
+      expect(glob.match(`${base}src/server.ts`)).toBe(true)
+    }
+    expect(glob.match("apps/other-demo/dist/index.html")).toBe(false)
+    const lruNode = `apps/${demo.slug}/node_modules/lru-cache/dist/esm/node/index.min.js`
+    const lruCjsNode = `apps/${demo.slug}/node_modules/lru-cache/dist/commonjs/node/index.min.js`
     if (demo.slug === "mastra-agent-demo") {
-      expect(includeFiles).toContain("node_modules/lru-cache/dist/esm/node/**")
-      expect(includeFiles).toContain(`apps/${demo.slug}/node_modules/lru-cache/dist/commonjs/node/**`)
+      expect(glob.match(lruNode)).toBe(true)
+      expect(glob.match(lruCjsNode)).toBe(true)
+      expect(glob.match(`apps/${demo.slug}/node_modules/lru-cache/dist/esm/index.min.js`)).toBe(false)
     } else {
       expect(includeFiles).not.toContain("lru-cache")
     }

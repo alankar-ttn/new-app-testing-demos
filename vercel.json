@@ -29,7 +29,7 @@
       "functions": {
         "src/server.ts": {
           "maxDuration": 60,
-          "includeFiles": "dist/**,src/**,apps/pi-durable-demo/dist/**,apps/pi-durable-demo/src/**"
+          "includeFiles": "{,apps/pi-durable-demo/}{dist,src}/**"
         }
       }
     },
@@ -42,7 +42,7 @@
       "functions": {
         "src/server.ts": {
           "maxDuration": 60,
-          "includeFiles": "dist/**,src/**,apps/mastra-agent-demo/dist/**,apps/mastra-agent-demo/src/**,node_modules/lru-cache/dist/esm/node/**,apps/mastra-agent-demo/node_modules/lru-cache/dist/esm/node/**,node_modules/lru-cache/dist/commonjs/node/**,apps/mastra-agent-demo/node_modules/lru-cache/dist/commonjs/node/**"
+          "includeFiles": "{,apps/mastra-agent-demo/}{dist,src,node_modules/lru-cache/dist/*/node}/**"
         }
       }
     }

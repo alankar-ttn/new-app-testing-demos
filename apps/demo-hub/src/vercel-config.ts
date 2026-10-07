@@ -22,12 +22,23 @@ export type VercelProjectConfig = {
   rewrites: Rewrite[]
 }
 
-function lruCacheNodeDialectGlobs(slug: string): string[] {
-  const dialects = ["dist/esm/node/**", "dist/commonjs/node/**"]
-  return dialects.flatMap((dialect) => [
-    `node_modules/lru-cache/${dialect}`,
-    `apps/${slug}/node_modules/lru-cache/${dialect}`,
-  ])
+export const INCLUDE_FILES_MAX_LENGTH = 256
+
+/**
+ * includeFiles is a single node-glob pattern (commas only separate inside
+ * braces) and the schema caps it at 256 characters. A services build globs it
+ * from the repository root, so the leading brace also matches service-relative.
+ */
+export function bunIncludeFiles(slug: string): string {
+  const dirs = ["dist", "src"]
+  if (slug === "mastra-agent-demo") {
+    // Bun services trace dependencies with NFT condition ["bun"], which replaces
+    // the default "node" condition. Bun itself still resolves the "node" export.
+    // lru-cache's node build is the file the runtime loads; without it the Mastra
+    // function throws "Cannot find package 'lru-cache'" while the module evaluates.
+    dirs.push("node_modules/lru-cache/dist/*/node")
+  }
+  return `{,apps/${slug}/}{${dirs.join(",")}}/**`
 }
 
 function demoService(demo: DemoEntry): ServiceConfig {
@@ -35,19 +46,7 @@ function demoService(demo: DemoEntry): ServiceConfig {
   if (demo.framework === "bun") {
     // bunVersion is not a service field, and a root bunVersion would switch
     // every service onto Bun. The app selects Bun with package.json engines.bun.
-    // includeFiles is globbed from the repository root during a services build,
-    // so both the service-relative and repo-relative patterns are listed.
-    // Bun services trace dependencies with NFT condition ["bun"], which replaces
-    // the default "node" condition. Bun itself still resolves the "node" export.
-    // lru-cache's node build is the file the runtime loads; without it the Mastra
-    // function throws "Cannot find package 'lru-cache'" while the module evaluates.
-    const includeFiles = [
-      "dist/**",
-      "src/**",
-      `apps/${demo.slug}/dist/**`,
-      `apps/${demo.slug}/src/**`,
-      ...(demo.slug === "mastra-agent-demo" ? lruCacheNodeDialectGlobs(demo.slug) : []),
-    ]
+    const includeFiles = bunIncludeFiles(demo.slug)
     return {
       root,
       framework: "bun",
@@ -57,7 +56,7 @@ function demoService(demo: DemoEntry): ServiceConfig {
       functions: {
         "src/server.ts": {
           maxDuration: 60,
-          includeFiles: includeFiles.join(","),
+          includeFiles,
         },
       },
     }
