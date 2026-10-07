@@ -42,7 +42,7 @@
       "functions": {
         "src/server.ts": {
           "maxDuration": 60,
-          "includeFiles": "dist/**,src/**,apps/mastra-agent-demo/dist/**,apps/mastra-agent-demo/src/**"
+          "includeFiles": "dist/**,src/**,apps/mastra-agent-demo/dist/**,apps/mastra-agent-demo/src/**,node_modules/lru-cache/dist/esm/node/**,apps/mastra-agent-demo/node_modules/lru-cache/dist/esm/node/**,node_modules/lru-cache/dist/commonjs/node/**,apps/mastra-agent-demo/node_modules/lru-cache/dist/commonjs/node/**"
         }
       }
     }
