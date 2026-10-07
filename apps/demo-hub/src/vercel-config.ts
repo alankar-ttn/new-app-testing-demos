@@ -22,6 +22,14 @@ export type VercelProjectConfig = {
   rewrites: Rewrite[]
 }
 
+function lruCacheNodeDialectGlobs(slug: string): string[] {
+  const dialects = ["dist/esm/node/**", "dist/commonjs/node/**"]
+  return dialects.flatMap((dialect) => [
+    `node_modules/lru-cache/${dialect}`,
+    `apps/${slug}/node_modules/lru-cache/${dialect}`,
+  ])
+}
+
 function demoService(demo: DemoEntry): ServiceConfig {
   const root = `apps/${demo.slug}`
   if (demo.framework === "bun") {
@@ -29,6 +37,17 @@ function demoService(demo: DemoEntry): ServiceConfig {
     // every service onto Bun. The app selects Bun with package.json engines.bun.
     // includeFiles is globbed from the repository root during a services build,
     // so both the service-relative and repo-relative patterns are listed.
+    // Bun services trace dependencies with NFT condition ["bun"], which replaces
+    // the default "node" condition. Bun itself still resolves the "node" export.
+    // lru-cache's node build is the file the runtime loads; without it the Mastra
+    // function throws "Cannot find package 'lru-cache'" while the module evaluates.
+    const includeFiles = [
+      "dist/**",
+      "src/**",
+      `apps/${demo.slug}/dist/**`,
+      `apps/${demo.slug}/src/**`,
+      ...(demo.slug === "mastra-agent-demo" ? lruCacheNodeDialectGlobs(demo.slug) : []),
+    ]
     return {
       root,
       framework: "bun",
@@ -38,7 +57,7 @@ function demoService(demo: DemoEntry): ServiceConfig {
       functions: {
         "src/server.ts": {
           maxDuration: 60,
-          includeFiles: `dist/**,src/**,apps/${demo.slug}/dist/**,apps/${demo.slug}/src/**`,
+          includeFiles: includeFiles.join(","),
         },
       },
     }

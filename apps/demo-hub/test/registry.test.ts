@@ -46,6 +46,12 @@ test("bun services keep bunVersion on the app vercel.json", () => {
     const includeFiles = service?.functions?.["src/server.ts"]?.includeFiles ?? ""
     expect(includeFiles).toContain("dist/**")
     expect(includeFiles).toContain(`apps/${demo.slug}/dist/**`)
+    if (demo.slug === "mastra-agent-demo") {
+      expect(includeFiles).toContain("node_modules/lru-cache/dist/esm/node/**")
+      expect(includeFiles).toContain(`apps/${demo.slug}/node_modules/lru-cache/dist/commonjs/node/**`)
+    } else {
+      expect(includeFiles).not.toContain("lru-cache")
+    }
     const pkg = JSON.parse(
       readFileSync(new URL(`../../../apps/${demo.slug}/package.json`, import.meta.url), "utf8"),
     ) as { engines?: { bun?: string } }
