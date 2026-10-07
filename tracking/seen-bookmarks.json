@@ -1,6 +1,5 @@
 {
-  "proposed": [],
-  "skipped": [
+  "proposed": [
     {
       "id": "2100545857955193062",
       "title": "Mastra (TypeScript agent framework: agents, tools, memory, workflows)",
@@ -10,6 +9,7 @@
       "slug": "mastra-agent-demo"
     }
   ],
+  "skipped": [],
   "built": [
     {
       "id": "2097061091066937696",

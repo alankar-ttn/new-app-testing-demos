@@ -10,5 +10,11 @@
     "name": "Pi Durable crash-proof agent",
     "description": "Kill a mock agent mid-run and restart it from the last SQLite checkpoint.",
     "framework": "bun"
+  },
+  {
+    "slug": "mastra-agent-demo",
+    "name": "Mastra portfolio concierge",
+    "description": "Chat with a local Mastra agent that reads portfolio notes, saves a message, and books a mock slot.",
+    "framework": "bun"
   }
 ]
