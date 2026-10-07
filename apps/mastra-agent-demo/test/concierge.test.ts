@@ -1,4 +1,5 @@
 import { afterEach, expect, test } from "bun:test"
+import { existsSync } from "node:fs"
 import { mkdtemp, rm } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
@@ -132,4 +133,42 @@ test("the agent remembers a thread in LibSQL and uses the knowledge tool", async
   } finally {
     await reopened.close()
   }
+})
+
+test("Vercel keeps the thread in process memory and does not open LibSQL", async () => {
+  process.env.VERCEL = "1"
+  const dir = await mkdtemp(join(tmpdir(), "mastra-vercel-"))
+  temps.push(dir)
+  const threadId = "thread-vercel-1"
+  const concierge = await createConcierge({ dataDir: dir, knowledgeDir })
+  try {
+    await concierge.ask(threadId, "What projects have you shipped?")
+    const first = await concierge.snapshot(threadId)
+    expect(first.messages.some((message) => message.role === "assistant" && /Harbor map/.test(message.text))).toBe(true)
+  } finally {
+    await concierge.close()
+  }
+
+  expect(existsSync(join(dir, "memory.db"))).toBe(false)
+  const reopened = await createConcierge({ dataDir: dir, knowledgeDir })
+  try {
+    const restored = await reopened.snapshot(threadId)
+    expect(restored.messages).toEqual([])
+  } finally {
+    await reopened.close()
+  }
+})
+
+test("the server entry does not statically import libsql", async () => {
+  const server = fileURLToPath(new URL("../src/server.ts", import.meta.url))
+  const built = await Bun.build({
+    entrypoints: [server],
+    target: "bun",
+    packages: "external",
+  })
+  expect(built.success).toBe(true)
+  const text = await built.outputs[0]?.text()
+  expect(text ?? "").not.toMatch(/from ["']@mastra\/libsql["']/)
+  expect(text ?? "").not.toMatch(/from ["']@libsql\/client["']/)
+  expect(text ?? "").not.toMatch(/from ["']libsql["']/)
 })

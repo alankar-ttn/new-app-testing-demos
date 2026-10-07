@@ -2,7 +2,7 @@ import { mkdir } from "node:fs/promises"
 import { Agent } from "@mastra/core/agent"
 import { Mastra } from "@mastra/core"
 import type { MastraModelConfig } from "@mastra/core/llm"
-import { LibSQLStore } from "@mastra/libsql"
+import { InMemoryStore, type MastraCompositeStore } from "@mastra/core/storage"
 import { Memory } from "@mastra/memory"
 import type { Booking, ContactNote } from "./desk"
 import { openDesk } from "./desk"
@@ -104,13 +104,25 @@ export type Concierge = {
   close(): Promise<void>
 }
 
+async function openThreadStorage(dataDir: string): Promise<MastraCompositeStore> {
+  // Vercel traces this entry with NFT. libsql loads its native addon through
+  // require(`@libsql/${target}`) at import time, and that .node file is left
+  // out of the function. Evaluating it crashes the invocation before HTML is
+  // served. In-process memory matches the instance lifetime of /tmp on Vercel.
+  if (process.env.VERCEL === "1") {
+    return new InMemoryStore({ id: "mastra-agent-demo" })
+  }
+  const { LibSQLStore } = await import("@mastra/libsql")
+  return new LibSQLStore({
+    id: "mastra-agent-demo",
+    url: `file:${dataDir}/memory.db`,
+  })
+}
+
 export async function createConcierge(options: { dataDir: string; knowledgeDir: string }): Promise<Concierge> {
   await mkdir(options.dataDir, { recursive: true })
   const desk = openDesk(options.dataDir)
-  const storage = new LibSQLStore({
-    id: "mastra-agent-demo",
-    url: `file:${options.dataDir}/memory.db`,
-  })
+  const storage = await openThreadStorage(options.dataDir)
   const agent = new Agent({
     id: AGENT_ID,
     name: "Portfolio concierge",

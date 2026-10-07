@@ -119,7 +119,7 @@ export function DemoApp() {
           <h1 className="text-3xl font-medium tracking-tight">Portfolio concierge</h1>
           <p className="max-w-2xl text-sm text-muted-foreground">
             A local Mastra agent reads a knowledge folder, saves a message, and books a mock slot.
-            The thread stays in LibSQL after you reload the page. No API key.
+            The thread stays in Mastra memory after you reload the page. No API key.
           </p>
         </div>
         <Badge variant="outline">Local model</Badge>
