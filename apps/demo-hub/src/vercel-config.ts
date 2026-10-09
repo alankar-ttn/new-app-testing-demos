@@ -75,8 +75,21 @@ function demoService(demo: DemoEntry): ServiceConfig {
     installCommand: "bun install",
     buildCommand: "bun run build",
     outputDirectory: "dist",
-    rewrites: [{ source: "/(.*)", destination: "/index.html" }],
+    // The service sees the public mount (`/demos/<slug>/...`). Built files live
+    // at dist root, so asset requests are rewritten before the SPA fallback.
+    rewrites: viteServiceRewrites(demo.slug),
   }
+}
+
+function viteServiceRewrites(slug: string): Rewrite[] {
+  const mounted = `/demos/${slug}`
+  return [
+    { source: `${mounted}/assets/:path*`, destination: "/assets/:path*" },
+    { source: mounted, destination: "/index.html" },
+    { source: `${mounted}/`, destination: "/index.html" },
+    { source: `${mounted}/:path*`, destination: "/index.html" },
+    { source: "/(.*)", destination: "/index.html" },
+  ]
 }
 
 /** Build the root Vercel project config from the demo registry. */

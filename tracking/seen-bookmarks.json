@@ -1,16 +1,6 @@
 {
   "proposed": [],
-  "skipped": [
-    {
-      "id": "2100545585342238945",
-      "title": "React Three Fiber (Three.js React renderer for interactive 3D)",
-      "url": "https://x.com/I_Am_ZIk_/status/2100545585342238945",
-      "date": "2026-10-09",
-      "tech": "React Three Fiber",
-      "slug": "react-three-fiber-demo",
-      "reason": "no response to 2026-10-09 proposal"
-    }
-  ],
+  "skipped": [],
   "built": [
     {
       "id": "2097061091066937696",
@@ -35,6 +25,14 @@
       "date": "2026-10-07",
       "tech": "Mastra",
       "slug": "mastra-agent-demo"
+    },
+    {
+      "id": "2100545585342238945",
+      "title": "React Three Fiber (Three.js React renderer for interactive 3D)",
+      "url": "https://x.com/I_Am_ZIk_/status/2100545585342238945",
+      "date": "2026-10-09",
+      "tech": "React Three Fiber",
+      "slug": "react-three-fiber-demo"
     }
   ]
 }
