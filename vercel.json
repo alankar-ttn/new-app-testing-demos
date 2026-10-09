@@ -45,6 +45,35 @@
           "includeFiles": "{,apps/mastra-agent-demo/}{dist,src,node_modules/lru-cache/dist/*/node}/**"
         }
       }
+    },
+    "react_three_fiber_demo": {
+      "root": "apps/react-three-fiber-demo",
+      "framework": "vite",
+      "installCommand": "bun install",
+      "buildCommand": "bun run build",
+      "outputDirectory": "dist",
+      "rewrites": [
+        {
+          "source": "/demos/react-three-fiber-demo/assets/:path*",
+          "destination": "/assets/:path*"
+        },
+        {
+          "source": "/demos/react-three-fiber-demo",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/demos/react-three-fiber-demo/",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/demos/react-three-fiber-demo/:path*",
+          "destination": "/index.html"
+        },
+        {
+          "source": "/(.*)",
+          "destination": "/index.html"
+        }
+      ]
     }
   },
   "rewrites": [
@@ -100,6 +129,24 @@
       "source": "/demos/mastra-agent-demo/:path*",
       "destination": {
         "service": "mastra_agent_demo"
+      }
+    },
+    {
+      "source": "/demos/react-three-fiber-demo",
+      "destination": {
+        "service": "react_three_fiber_demo"
+      }
+    },
+    {
+      "source": "/demos/react-three-fiber-demo/",
+      "destination": {
+        "service": "react_three_fiber_demo"
+      }
+    },
+    {
+      "source": "/demos/react-three-fiber-demo/:path*",
+      "destination": {
+        "service": "react_three_fiber_demo"
       }
     },
     {

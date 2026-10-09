@@ -67,3 +67,21 @@ test("bun services keep bunVersion on the app vercel.json", () => {
     expect(pkg.engines?.bun).toBe("1.x")
   }
 })
+
+test("vite services serve mounted assets from the static build", () => {
+  const config = buildVercelConfig(demoEntries)
+  const viteDemos = demoEntries.filter((demo) => demo.framework === "vite")
+  expect(viteDemos.length).toBeGreaterThan(0)
+  for (const demo of viteDemos) {
+    const service = config.services[serviceName(demo.slug)]
+    expect(service?.framework).toBe("vite")
+    expect(service?.outputDirectory).toBe("dist")
+    expect(service?.functions).toBeUndefined()
+    const rewrites = service?.rewrites ?? []
+    const asset = rewrites.find((rewrite) => rewrite.source === `/demos/${demo.slug}/assets/:path*`)
+    expect(asset?.destination).toBe("/assets/:path*")
+    expect(rewrites.some((rewrite) => rewrite.destination === "/index.html")).toBe(true)
+    expect(rewrites.at(-1)?.source).toBe("/(.*)")
+    expect(rewrites.at(-1)?.destination).toBe("/index.html")
+  }
+})

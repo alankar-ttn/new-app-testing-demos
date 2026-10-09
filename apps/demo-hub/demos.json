@@ -16,5 +16,11 @@
     "name": "Mastra portfolio concierge",
     "description": "Chat with a local Mastra agent that reads portfolio notes, saves a message, and books a mock slot.",
     "framework": "bun"
+  },
+  {
+    "slug": "react-three-fiber-demo",
+    "name": "React Three Fiber yard",
+    "description": "Watch trucks carry orders between depots. Pause, change speed, add an order, or click a truck.",
+    "framework": "vite"
   }
 ]
