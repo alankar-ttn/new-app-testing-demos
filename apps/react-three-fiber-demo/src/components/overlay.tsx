@@ -53,7 +53,7 @@ export function Overlay({
 
   return (
     <div className="pointer-events-none absolute inset-0 z-10 p-3 sm:p-4">
-      <Card className="pointer-events-auto max-h-[calc(100%-1.5rem)] w-[min(22rem,100%)] overflow-auto bg-card/95 backdrop-blur-sm">
+      <Card className="pointer-events-auto max-h-[min(46dvh,calc(100%-1.5rem))] w-[min(22rem,100%)] overflow-auto bg-card/95 backdrop-blur-sm sm:max-h-[calc(100%-1.5rem)]">
         <CardHeader>
           <div className="flex items-start justify-between gap-3">
             <CardTitle>Yard dispatch</CardTitle>

@@ -29,13 +29,13 @@ export function DepotMesh({ depot }: { depot: Depot }) {
         <meshStandardMaterial color="#e7d7bc" emissive="#e0b15a" emissiveIntensity={0.35} />
       </mesh>
       <Html
-        position={[0, 2.15, 0]}
+        position={[0, 2.2, 0]}
         center
-        distanceFactor={14}
+        distanceFactor={22}
         zIndexRange={[8, 0]}
         style={{ pointerEvents: "none" }}
       >
-        <div className="pointer-events-none rounded-md bg-stone-950/75 px-1.5 py-0.5 text-[10px] font-medium tracking-wide whitespace-nowrap text-stone-100">
+        <div className="pointer-events-none rounded-md bg-stone-950/80 px-2 py-0.5 text-xs font-medium whitespace-nowrap text-stone-100">
           {depot.name}
         </div>
       </Html>
